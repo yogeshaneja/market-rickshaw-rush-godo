@@ -1,3 +1,35 @@
 # Market Rickshaw Rush
 
-Original offline Godot arcade racer. Implementation is reviewed on feature branches and pull requests.
+Original offline three-lane Godot arcade racer for adults, set in a colourful fictional Indian bazaar. Repository chosen by the owner: `yogeshaneja/market-rickshaw-rush-godo` (the repository name ends in “godo”).
+
+## Run on your computer
+
+1. Install standard **Godot 4.6.3 stable** (GDScript, Compatibility renderer). This is the version actually checked; other stable 4.x versions require verification.
+2. Open Godot Project Manager → Import → choose this folder’s `project.godot` → Import & Edit.
+3. Press **F5** to run. Choose difficulty and Start run. Use A/D or arrow keys; on-screen buttons also work. P/Escape pauses.
+
+This is a Godot project, not Expo: there is no `npm install`, QR code or Expo Go workflow. It uses original procedural artwork and the bundled OFL-licensed Noto Sans Devanagari font. No backend, cloud call, ads, payments, sounds or third-party plugins.
+
+## Android phone testing
+
+See `docs/android-testing.md`. A native APK export is still required; no APK or AAB has been built here. Configure verified Android tooling and matching export templates, then deploy via USB or paired wireless ADB. Developer-account setup is not needed for your own debug phone test. Production signing/publication remains separately approved.
+
+## Play
+
+Three difficulty presets, capped acceleration, seeded hazards, tokens, a guaranteed planned safe corridor, one-hit game over, immediate retry, pause/background protection and a 3-second explicit resume countdown. The guarantee is a reachable route, not protection from steering into obstacles. One accepted lane change per cooldown; holding a key does not auto-repeat input. Score is floor(world distance / 10) + 25 per collected token; distance is in fictional game units, not real metres. Seed 1729 repeats the same route per difficulty.
+
+English defaults; Settings switches to Hindi. Best score per difficulty, language and reduce-effects preference save to versioned `user://` JSON. Reset scores retains preferences. No account or cloud sync. Interrupted runs do not resume after closing the app. Reduce effects removes nonessential bobbing, entry fades and token particles; essential road/lane movement remains.
+
+## Verify
+
+With Godot on PATH and Python 3 installed:
+
+```sh
+python tools/check.py
+```
+
+Or pass `--godot` with your editor executable’s absolute path. The wrapper checks exit codes, script errors and expected test summaries. It imports the actual project and runs both actual GDScript suites. Test persistence uses unique disposable filenames, not player saves.
+
+The current result is 90,687 runner checks and 18 headless UI/store checks passed. These do not prove physical input, visible art quality, Hindi shaping, Android performance or standalone airplane-mode behavior. See `docs/verification.md` and `release/README.md`.
+
+All four release steps have draft material. Public account/contact/hosting fields, Android package/export approval, final screenshots, independent Hindi/balance review, signed AAB and publication remain pending. No automatic CI/publishing is added. Nothing has been merged or released.

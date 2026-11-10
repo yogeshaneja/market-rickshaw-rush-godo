@@ -1,0 +1,13 @@
+.godot/
+build/
+exports/
+export_credentials.cfg
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.apk
+*.aab
+.env
+.env.*
+.DS_Store

@@ -1,0 +1,28 @@
+{
+  "artwork": {
+    "creator": "Original source geometry authored for this project with AI assistance",
+    "files": [
+      "scripts/main.gd",
+      "assets/icon.svg"
+    ],
+    "thirdPartyCharacters": false,
+    "downloadedArt": false,
+    "audio": "none; silent prototype"
+  },
+  "font": {
+    "file": "assets/fonts/NotoSansDevanagari-Regular.ttf",
+    "family": "Noto Sans Devanagari Regular",
+    "creator": "Google/Noto contributors",
+    "source": "Installed fonts-noto-core font, upstream https://github.com/notofonts/devanagari",
+    "license": "SIL Open Font License 1.1",
+    "licenseFile": "assets/fonts/OFL.txt",
+    "modifications": "none",
+    "sha256": "79a470365ccb210fa3c7d8d8ff2e005ef9d983cfd067f735a0caf7e15070ca9f",
+    "redistribution": "OFL-licensed bundled font with notice retained"
+  },
+  "engineNotices": [
+    "docs/licenses/GODOT.txt",
+    "docs/licenses/THIRD-PARTY.json"
+  ],
+  "review": "Independent editorial/rights sign-off pending; no claim of exclusivity in generic shapes."
+}

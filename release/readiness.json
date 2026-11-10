@@ -1,0 +1,13 @@
+{
+  "engineVerified": "4.6.3.stable.official.7d41c59c4",
+  "rendererConfigured": "gl_compatibility",
+  "headlessImport": "passed",
+  "runnerChecks": 90687,
+  "uiStoreChecks": 18,
+  "renderedDesktopReview": "blocked by desktop automation input focus",
+  "androidExport": "not performed",
+  "signedAab": "not built",
+  "humanHindiAndBalanceReview": "pending",
+  "releaseDrafts": "prepared",
+  "published": false
+}
