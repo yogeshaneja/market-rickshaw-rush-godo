@@ -3,11 +3,19 @@
     "creator": "Original source geometry authored for this project with AI assistance",
     "files": [
       "scripts/main.gd",
-      "assets/icon.svg"
+      "assets/icon.svg",
+      "assets/art/car.svg",
+      "assets/art/cart.svg",
+      "assets/art/rickshaw.svg",
+      "assets/art/stall-0.svg",
+      "assets/art/stall-1.svg",
+      "assets/art/stall-2.svg",
+      "assets/art/stall-3.svg"
     ],
     "thirdPartyCharacters": false,
     "downloadedArt": false,
-    "audio": "none; silent prototype"
+    "audio": "none; silent prototype",
+    "description": "Original vector illustrations: four market stalls with striped awnings, produce, shop signs and plants; top-down rickshaw, car and fruit cart. No external image downloads or branded characters."
   },
   "font": {
     "file": "assets/fonts/NotoSansDevanagari-Regular.ttf",

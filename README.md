@@ -33,3 +33,7 @@ Or pass `--godot` with your editor executable’s absolute path. The wrapper che
 The current result is 90,687 runner checks and 18 headless UI/store checks passed. These do not prove physical input, visible art quality, Hindi shaping, Android performance or standalone airplane-mode behavior. See `docs/verification.md` and `release/README.md`.
 
 All four release steps have draft material. Public account/contact/hosting fields, Android package/export approval, final screenshots, independent Hindi/balance review, signed AAB and publication remain pending. No automatic CI/publishing is added. Nothing has been merged or released.
+
+### Illustrated market visuals
+
+The feature branch now bundles original vector market stalls, produce carts, cars and a detailed rickshaw, with festival pennants, animated driving details, coin sparkle and a dashboard dial. Nonessential driving effects respect Reduce Effects. Pull `feature/godot-market-racer`, allow Godot to finish importing the SVGs, then redeploy to replace the previous phone build. No new SDK, plugins or external services are required.

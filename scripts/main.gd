@@ -3,6 +3,10 @@ const Sim = preload("res://scripts/runner_sim.gd")
 const Save = preload("res://scripts/save_service.gd")
 const StoreLink = preload("res://scripts/store_link.gd")
 const RELEASE = preload("res://config/release.json")
+const RICKSHAW_ART = preload("res://assets/art/rickshaw.svg")
+const CAR_ART = preload("res://assets/art/car.svg")
+const CART_ART = preload("res://assets/art/cart.svg")
+const STALL_ART = [preload("res://assets/art/stall-0.svg"),preload("res://assets/art/stall-1.svg"),preload("res://assets/art/stall-2.svg"),preload("res://assets/art/stall-3.svg")]
 const Words = preload("res://scripts/localization.gd")
 var sim = Sim.new()
 var saves = Save.new()
@@ -14,6 +18,7 @@ var layer: CanvasLayer
 var ui: Control
 var panel: VBoxContainer
 var hud: Label
+var speed_label: Label
 var countdown_label: Label
 var touch_start := Vector2.ZERO
 var touch_index := -1
@@ -88,6 +93,7 @@ func _physics_process(delta: float) -> void:
   preferences.scores[level] = maxi(preferences.scores[level],sim.score())
   saves.save_data(preferences)
   show_page("results")
+ if is_instance_valid(speed_label): speed_label.text = "%03d" % int(sim.speed / 5.0)
  if is_instance_valid(hud): hud.text = "%s  %d    ◆ %d    %s  %d" % [word("score"),sim.score(),sim.tokens,word("best"),preferences.scores[level]]
  if is_instance_valid(countdown_label): countdown_label.text = "%s\n%d" % [word("countdown"),ceili(sim.countdown)] if sim.state == "countdown" else ""
 
@@ -107,6 +113,7 @@ func _clear_ui() -> void:
  ui.theme = button_theme
  layer.add_child(ui)
  hud = null
+ speed_label = null
  countdown_label = null
 
 func label(text: String, size: int = 19) -> Label:
@@ -128,7 +135,9 @@ func button(text: String, action: Callable, accent: bool = false) -> Button:
  item.add_theme_color_override("font_color",INK if accent else PAPER)
  var box := StyleBoxFlat.new()
  box.bg_color = GOLD if accent else Color("244c5c")
- box.set_corner_radius_all(12)
+ box.set_corner_radius_all(16)
+ box.border_width_bottom = 3
+ box.border_color = Color("b78128") if accent else Color("102f40")
  box.content_margin_left = 14
  box.content_margin_right = 14
  item.add_theme_stylebox_override("normal",box)
@@ -145,7 +154,7 @@ func make_panel() -> void:
  background.position = Vector2(20,35)
  background.size = Vector2(440,815)
  var style := StyleBoxFlat.new()
- style.bg_color = Color(0.06,0.16,0.21,0.96)
+ style.bg_color = Color(0.035,0.10,0.15,0.94)
  style.set_corner_radius_all(22)
  background.add_theme_stylebox_override("panel",style)
  ui.add_child(background)
@@ -194,6 +203,13 @@ func show_page(name: String) -> void:
   countdown_label.add_theme_font_size_override("font_size",40)
   countdown_label.add_theme_color_override("font_color",PAPER)
   ui.add_child(countdown_label)
+  speed_label = Label.new()
+  speed_label.position = Vector2(198,813)
+  speed_label.size = Vector2(84,46)
+  speed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+  speed_label.add_theme_font_size_override("font_size",30)
+  speed_label.add_theme_color_override("font_color",GOLD)
+  ui.add_child(speed_label)
   return
  make_panel()
  label(word("title"),30)
@@ -201,6 +217,13 @@ func show_page(name: String) -> void:
  if saves.recovered: label(word("recovered"),17)
  match name:
   "home":
+   var hero := TextureRect.new()
+   hero.texture = RICKSHAW_ART
+   hero.custom_minimum_size = Vector2(0,142)
+   hero.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+   hero.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+   hero.mouse_filter = Control.MOUSE_FILTER_IGNORE
+   panel.add_child(hero)
    label(word("tag"),16)
    label(word("intro"))
    label(word("difficulty"),17)
@@ -290,17 +313,27 @@ func lane_x(value: float) -> float:
  return 148.0 + value * 92.0
 
 func _draw() -> void:
- draw_rect(Rect2(0,0,480,900),Color("f7e7bf"))
+ draw_rect(Rect2(0,0,480,900),Color("d9b58b"))
  var travel: float = sim.distance if page in ["game","pause","results"] else 0.0
- draw_rect(Rect2(99,0,282,900),Color("3a535d"))
- draw_rect(Rect2(103,0,4,900),GOLD)
- draw_rect(Rect2(373,0,4,900),GOLD)
+ draw_rect(Rect2(95,0,290,900),Color("283c49"))
+ draw_rect(Rect2(105,0,270,900),Color("344955"))
+ for edge in [95,377]:
+  for i in range(-1,25):
+   draw_rect(Rect2(edge,float(i*40)+fmod(travel,40.0),8,38),Color("f0ce86") if i%2==0 else Color("a76c54"))
  for line in [194,286]:
-  for i in range(-1,12): draw_rect(Rect2(line,float(i*90)+fmod(travel,90.0),3,45),Color("b8d4ce"))
+  for i in range(-1,12): draw_rect(Rect2(line,float(i*90)+fmod(travel,90.0),3,42),Color("b6c6bd"))
  for i in range(-1,6):
-  var y := float(i*210)+fmod(travel*0.6,210.0)
-  draw_stall(Vector2(0,y),i)
-  draw_stall(Vector2(387,y+95),i+2)
+  var y := float(i*210)+fmod(travel,210.0)
+  draw_stall(Vector2(-1,y),i)
+  draw_stall(Vector2(386,y+95),i+2)
+ # Overhead strings and pennants move with the road, kept above the collision zone.
+ for i in range(-1,3):
+  var y := float(i*620)+fmod(travel,620.0)
+  draw_polyline(PackedVector2Array([Vector2(82,y),Vector2(240,y+30),Vector2(398,y)]),Color("1d3540"),2,true)
+  for j in range(10):
+   var x := 96.0+j*30.0
+   var sag := 28.0*(1.0-absf(x-240.0)/158.0)
+   draw_colored_polygon(PackedVector2Array([Vector2(x,y+sag),Vector2(x+18,y+sag),Vector2(x+9,y+sag+22)]),[GOLD,CORAL,MINT][j%3])
  if page in ["game","pause","results"]:
   for row in sim.rows:
    var y: float = 700.0 - (row.at - sim.distance)
@@ -310,30 +343,30 @@ func _draw() -> void:
  var bob: float = sin(effects_time*9.0)*1.5 if page == "game" and not preferences.reduce_effects and sim.state == "running" else 0.0
  draw_rickshaw(Vector2(lane_x(sim.x),700+bob))
  if particle_time > 0.0 and not preferences.reduce_effects:
-  for i in range(8):
-   var angle := float(i)*TAU/8.0
-   draw_circle(Vector2(lane_x(sim.x),650)+Vector2(cos(angle),sin(angle))*(1.0-particle_time/0.55)*55,4,GOLD)
-
- if page == "game": draw_style_box(round_box(PAPER,12),Rect2(7,7,466,67))
+  for i in range(12):
+   var angle := float(i)*TAU/12.0
+   draw_circle(Vector2(lane_x(sim.x),650)+Vector2(cos(angle),sin(angle))*(1.0-particle_time/0.55)*70,particle_time*7,GOLD)
+ if page == "game":
+  draw_style_box(round_box(PAPER,16),Rect2(7,7,466,67))
+  draw_style_box(round_box(INK,18),Rect2(184,801,112,75))
+  draw_arc(Vector2(240,853),42,PI+0.2,TAU-0.2,24,Color("356273"),3,true)
+  var speed_fraction: float = clampf(sim.speed / float(Sim.CONFIG[level].cap),0.0,1.0)
+  draw_arc(Vector2(240,853),42,PI+0.2,PI+0.2+speed_fraction*(PI-0.4),24,MINT,3,true)
 
 func draw_stall(at: Vector2, index: int) -> void:
- var colors: Array = [CORAL,MINT,GOLD,Color("8c75b0")]
- var color: Color = colors[posmod(index,4)]
- draw_rect(Rect2(at+Vector2(4,42),Vector2(84,122)),Color("dec299"))
- draw_rect(Rect2(at+Vector2(0,25),Vector2(94,40)),color)
- for i in range(4): draw_rect(Rect2(at+Vector2(i*24,25),Vector2(11,40)),PAPER)
- draw_rect(Rect2(at+Vector2(8,104),Vector2(76,42)),Color("a96d43"))
- for i in range(3):
-  draw_circle(at+Vector2(23+i*22,112),8,colors[posmod(index+i,4)])
- draw_rect(Rect2(at+Vector2(8,151),Vector2(77,7)),INK)
+ draw_texture_rect(STALL_ART[posmod(index,4)],Rect2(at,Vector2(94,200)),false)
 
 func draw_rickshaw(at: Vector2) -> void:
- draw_style_box(round_box(INK,8),Rect2(at+Vector2(-29,-22),Vector2(58,42)))
- draw_style_box(round_box(GOLD,12),Rect2(at+Vector2(-24,-36),Vector2(48,72)))
- draw_style_box(round_box(MINT,7),Rect2(at+Vector2(-20,-12),Vector2(40,42)))
- draw_style_box(round_box(INK,6),Rect2(at+Vector2(-19,-29),Vector2(38,20)))
- draw_rect(Rect2(at+Vector2(-17,25),Vector2(8,5)),PAPER)
- draw_rect(Rect2(at+Vector2(9,25),Vector2(8,5)),PAPER)
+ # Art stays inside the existing obstacle/collision readability envelope.
+ var lean: float = clampf((float(sim.lane)-sim.x)*0.12,-0.1,0.1) if page == "game" and not preferences.reduce_effects else 0.0
+ draw_set_transform(at,lean)
+ draw_texture_rect(RICKSHAW_ART,Rect2(Vector2(-36,-52),Vector2(72,106)),false)
+ if page == "game" and sim.state == "running" and not preferences.reduce_effects:
+  var wheel_offset: float = fmod(sim.distance*0.3,8.0)
+  for side in [-26.0,26.0]:
+   for i in range(2):
+    draw_line(Vector2(side-3,25+i*8+wheel_offset),Vector2(side+3,25+i*8+wheel_offset),Color("617482"),1)
+ draw_set_transform(Vector2.ZERO)
 
 func round_box(color: Color, radius: int) -> StyleBoxFlat:
  var key := color.to_html() + str(radius)
@@ -356,18 +389,16 @@ func draw_hazard(at: Vector2, kind: int) -> void:
    draw_arc(Vector2.ZERO,29,0,PI,16,Color("768b8f"),4)
    draw_set_transform(Vector2.ZERO)
   2:
-   draw_rect(Rect2(at-Vector2(26,30),Vector2(52,60)),MINT)
-   draw_circle(at+Vector2(-23,22),7,INK)
-   draw_circle(at+Vector2(23,22),7,INK)
-   draw_line(at+Vector2(-20,-23),at+Vector2(20,-23),PAPER,4)
+   draw_texture_rect(CART_ART,Rect2(at-Vector2(31,38),Vector2(62,76)),false)
   3:
-   draw_style_box(round_box(CORAL,10),Rect2(at-Vector2(27,44),Vector2(54,88)))
-   draw_rect(Rect2(at-Vector2(21,25),Vector2(42,21)),INK)
-   draw_rect(Rect2(at+Vector2(-21,12),Vector2(42,19)),Color("9a504c"))
+   draw_texture_rect(CAR_ART,Rect2(at-Vector2(29,46),Vector2(58,92)),false)
 
 func draw_token(at: Vector2) -> void:
- draw_colored_polygon(PackedVector2Array([at+Vector2(0,-16),at+Vector2(13,0),at+Vector2(0,16),at+Vector2(-13,0)]),GOLD)
- draw_circle(at,4,PAPER)
+ draw_circle(at+Vector2(2,4),18,Color(0.05,0.12,0.16,0.35))
+ draw_circle(at,17,Color("d18b28"))
+ draw_circle(at-Vector2(0,2),14,GOLD)
+ draw_arc(at-Vector2(0,2),10,0,TAU,24,Color("ffe7a1"),2,true)
+ draw_colored_polygon(PackedVector2Array([at+Vector2(0,-9),at+Vector2(6,-2),at+Vector2(0,5),at+Vector2(-6,-2)]),PAPER)
 
 func open_store() -> void:
  if not StoreLink.open_listing(RELEASE.data,OS.shell_open,OS.has_feature("android")):

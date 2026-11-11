@@ -11,3 +11,9 @@ Desktop UI attempt: Godot Project Manager opened, but desktop automation could n
 Not executed: native Android export, signed APK/AAB, phone deployment/ADB pairing, physical touch, TalkBack, device restart/backup behavior, standalone airplane-mode play, device frame pacing/memory/heat, current Play declaration review, independent Hindi/editorial review and human gameplay balancing. Font code-point coverage alone is not proof of correct Devanagari shaping.
 
 No model/cloud call, downloaded character art, sound, plugin, CI workflow, signing secret, merge or publication was introduced. The owner explicitly approved the initial README-only default-branch commit; implementation is isolated on a feature branch for PR review.
+
+## Illustrated market update
+
+Seven original bundled SVG illustrations replace the simple stall, rickshaw, car and cart shapes. Road edging, festival pennants, gold coins, a home-screen vehicle illustration and a speed dial enrich the presentation. Rickshaw lean and wheel motion respect Reduce Effects. Simulation geometry, spawning, scoring and input rules are unchanged.
+
+Validation: Godot 4.6.3 headless import and existing simulation/UI suites pass (90,687 simulation checks and 18 UI/store checks). New SVG imports load through actual Godot preloads. This does not verify rendered Android appearance, frame rate or physical touch. Phone visual review and a fresh local debug deployment remain required. No Android APK/AAB was built in this workspace.
