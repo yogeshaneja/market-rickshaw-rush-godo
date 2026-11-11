@@ -1,4 +1,6 @@
 extends Node2D
+const MarketLife = preload("res://scripts/market_life.gd")
+var market_life = MarketLife.new()
 const Sim = preload("res://scripts/runner_sim.gd")
 const Save = preload("res://scripts/save_service.gd")
 const StoreLink = preload("res://scripts/store_link.gd")
@@ -98,8 +100,10 @@ func _physics_process(delta: float) -> void:
  if is_instance_valid(countdown_label): countdown_label.text = "%s\n%d" % [word("countdown"),ceili(sim.countdown)] if sim.state == "countdown" else ""
 
 func _process(delta: float) -> void:
- effects_time += delta
- particle_time = maxf(0.0,particle_time - delta)
+ # Freeze ambient motion on pause, countdown and results, including coin bursts.
+ if not preferences.reduce_effects and (page == "home" or (page == "game" and sim.state == "running")):
+  effects_time += delta
+  particle_time = maxf(0.0,particle_time - delta)
  queue_redraw()
 
 func _clear_ui() -> void:
@@ -298,6 +302,7 @@ func set_language(language: String) -> void:
 
 func start_run() -> void:
  sim.begin(level,seed_value)
+ particle_time = 0.0
  reset_pending = false
  show_page("game")
 
@@ -326,6 +331,7 @@ func _draw() -> void:
   var y := float(i*210)+fmod(travel,210.0)
   draw_stall(Vector2(-1,y),i)
   draw_stall(Vector2(386,y+95),i+2)
+ market_life.draw_market(self,effects_time,travel,preferences.reduce_effects)
  # Overhead strings and pennants move with the road, kept above the collision zone.
  for i in range(-1,3):
   var y := float(i*620)+fmod(travel,620.0)
@@ -334,6 +340,7 @@ func _draw() -> void:
    var x := 96.0+j*30.0
    var sag := 28.0*(1.0-absf(x-240.0)/158.0)
    draw_colored_polygon(PackedVector2Array([Vector2(x,y+sag),Vector2(x+18,y+sag),Vector2(x+9,y+sag+22)]),[GOLD,CORAL,MINT][j%3])
+ market_life.draw_flying(self,effects_time,preferences.reduce_effects)
  if page in ["game","pause","results"]:
   for row in sim.rows:
    var y: float = 700.0 - (row.at - sim.distance)
@@ -341,6 +348,8 @@ func _draw() -> void:
    for blocked in row.blocked: draw_hazard(Vector2(lane_x(float(blocked)),y),row.kind)
    if not row.collected: draw_token(Vector2(lane_x(float(row.safe)),y))
  var bob: float = sin(effects_time*9.0)*1.5 if page == "game" and not preferences.reduce_effects and sim.state == "running" else 0.0
+ if page == "game" and sim.state == "running" and not preferences.reduce_effects:
+  market_life.draw_dust(self,Vector2(lane_x(sim.x),700),effects_time)
  draw_rickshaw(Vector2(lane_x(sim.x),700+bob))
  if particle_time > 0.0 and not preferences.reduce_effects:
   for i in range(12):

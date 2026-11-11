@@ -37,3 +37,5 @@ All four release steps have draft material. Public account/contact/hosting field
 ### Illustrated market visuals
 
 The feature branch now bundles original vector market stalls, produce carts, cars and a detailed rickshaw, with festival pennants, animated driving details, coin sparkle and a dashboard dial. Nonessential driving effects respect Reduce Effects. Pull `feature/godot-market-racer`, allow Godot to finish importing the SVGs, then redeploy to replace the previous phone build. No new SDK, plugins or external services are required.
+
+The market also includes tea stalls, shade umbrellas, trees, animated steam and flower garlands, two flying kites, three birds and lightweight driving dust. Flying objects are scenery, not obstacles. Additional motion freezes on pause and is static or hidden under Reduce Effects.

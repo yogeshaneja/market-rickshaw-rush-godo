@@ -10,12 +10,17 @@
       "assets/art/stall-0.svg",
       "assets/art/stall-1.svg",
       "assets/art/stall-2.svg",
-      "assets/art/stall-3.svg"
+      "assets/art/stall-3.svg",
+      "scripts/market_life.gd",
+      "assets/art/tea-stall.svg",
+      "assets/art/tree.svg",
+      "assets/art/umbrella.svg",
+      "assets/art/kite.svg"
     ],
     "thirdPartyCharacters": false,
     "downloadedArt": false,
     "audio": "none; silent prototype",
-    "description": "Original vector illustrations: four market stalls with striped awnings, produce, shop signs and plants; top-down rickshaw, car and fruit cart. No external image downloads or branded characters."
+    "description": "Original vector illustrations: four market stalls with striped awnings, produce, shop signs and plants; top-down rickshaw, car and fruit cart. No external image downloads or branded characters. Additional original tea stall, tree, umbrella and kite illustrations, native drawn birds, garlands, steam and dust. Flying objects are decorative only."
   },
   "font": {
     "file": "assets/fonts/NotoSansDevanagari-Regular.ttf",

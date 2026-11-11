@@ -47,6 +47,30 @@ func run() -> void:
  game.licenses_open = true
  game.show_page("about")
  check(is_instance_valid(game.panel),"offline licenses accessible")
+ # Decorative motion must stop with game pause/results and the reduced-motion setting.
+ game.preferences.reduce_effects = false
+ game.start_run()
+ var before: float = game.effects_time
+ game._process(0.25)
+ check(game.effects_time > before,"ambient motion runs during driving")
+ game.particle_time = 0.4
+ game.pause_run()
+ before = game.effects_time
+ game._process(0.25)
+ check(game.effects_time == before and game.particle_time == 0.4,"pause freezes ambient motion and bursts")
+ game.resume_run()
+ game._process(0.25)
+ check(game.effects_time == before,"countdown freezes ambient motion")
+ game.start_run()
+ game.preferences.reduce_effects = true
+ before = game.effects_time
+ game._process(0.25)
+ check(game.effects_time == before,"reduced effects freeze decorative clock")
+ game.preferences.reduce_effects = false
+ game.show_page("results")
+ before = game.effects_time
+ game._process(0.25)
+ check(game.effects_time == before,"results freeze ambient motion")
  print("UI store checks")
  var config := {"published":false,"listing_verified":false,"package_id":"com.example.racer"}
  var calls: Array = []
