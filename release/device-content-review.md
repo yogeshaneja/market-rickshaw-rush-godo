@@ -16,3 +16,5 @@ Draft declaration candidates only: Racing game, adult audience (exact bands need
 - Review all three route palettes, coastal palms, monsoon rain/puddles, localized shop signs, roadside vendors/shoppers, evening and festival modes for readability; decorations must not obscure animal or traffic hazards.
 - Listen to the original music, bell, coin/end sounds and quiet ambience at conservative volume; check loop seams, separate music/SFX mute and volume, four-second preview, headphone/audio interruptions, pause/countdown/background, resume and restart. Verify no audio downloads in airplane mode.
 - Confirm old local saves migrate without losing scores/language, route/audio preferences persist, paint unlocks at exactly 300/800 best points, and score reset removes those unlocks.
+
+- Verify the new landscape APK on the phone: orientation/relaunch, wide/narrow aspect ratios, safe areas, menu scrolling and all controls; time low-obstacle jumps on each difficulty, verify grounded landing and no double jumps, and verify pause/background/countdown freezes the arc. Cars and elephants remain unjumpable.

@@ -28,7 +28,7 @@ With Godot on PATH and Python 3 installed:
 python tools/check.py
 ```
 
-Or pass `--godot` with your editor executable’s absolute path. The wrapper checks exit codes, script errors and expected test summaries. It imports the actual project and runs three actual GDScript suites. Test persistence uses unique disposable filenames, not player saves.
+Or pass `--godot` with your editor executable’s absolute path. By default the wrapper imports the project and runs only the focused jump/layout smoke suite. Use `python tools/check.py --full` only when broad regression testing is requested. The wrapper checks exit codes, script errors and expected test summaries. Test persistence uses unique disposable filenames, not player saves.
 
 The current result is 90,756 runner checks, 24 headless UI/store checks and 34 presentation/audio-control checks passed. These do not prove physical input, visible art quality, Hindi shaping, Android performance or standalone airplane-mode behavior. See `docs/verification.md` and `release/README.md`.
 
@@ -51,3 +51,11 @@ Rickshaws have original seat patterns, tassels and paintwork. Marigold/teal is a
 Settings has independent music and sound/ambience switches, volume sliders and a four-second preview. Audio starts only after Play or Preview, stops while paused/backgrounded/counting down and resumes music from its saved playback position. The player pool is bounded to five nodes; there is no streaming or microphone access.
 
 The original **Bazaar Morning** synthesized instrumental, soft market chimes/rustle, rickshaw bell and coin/end cues total 73,000 bytes. These are synthesized flute-like and drum-inspired timbres, not sampled traditional performances. Source: `tools/generate_audio.py`; output permission and provenance: `assets/audio/LICENSE.txt` and `docs/audio-provenance.json`. Running the game does not require Python or ffmpeg; those tools are only for rebuilding audio. Listening/loop seams, actual Android interruptions and phone performance still need device review.
+
+## Landscape and jump controls
+
+The game now uses a 1280×720 landscape canvas, aspect-preserving market art and wider scenery. Rebuild/redeploy the debug APK after pulling; an already installed APK will keep the old orientation until replaced. Menus scroll within the centred landscape panel; lane controls are at lower left and Jump is at lower right.
+
+Tap Jump, or press Space/Up, just before a low obstacle. Crates, potholes, carts, monkeys and snakes have mint upward markers and can be cleared with correct timing. Cars and elephants require steering around them. A jump lasts 1.25 seconds with 1.60 seconds between takeoffs; clearance is active after takeoff and before landing. No double jump. Pause/background/resume countdown freeze both jump progress and cooldown. Reduce Effects retains this essential gameplay motion and the ground shadow. Jumping does not grant extra points or change the seeded route.
+
+Latest validation for this change: actual Godot import plus 35 focused jump/layout checks passed. The large regression suites were not rerun, per the owner's preference. Native phone orientation, touch size, rendered composition and jump feel remain pending owner review.

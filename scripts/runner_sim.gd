@@ -10,6 +10,11 @@ const INPUT_COOLDOWN = 0.26
 const REACTION_MARGIN = 0.6
 const DANGER_HALF_DEPTH = 80.0
 const TOKEN_BONUS = 25
+const JUMP_DURATION = 1.25
+const JUMP_COOLDOWN = 1.60
+const JUMPABLE_KINDS = [0,1,2,5,6]
+var jump_elapsed := -1.0
+var jump_cooldown := 0.0
 # 0 crate, 1 pothole, 2 cart, 3 car, 4 elephant, 5 monkey, 6 snake.
 const HAZARD_COUNT = 7
 var state: String = "ready"
@@ -34,6 +39,8 @@ func begin(level: int, seed_value: int) -> void:
  lane = 1
  x = 1.0
  cooldown = 0.0
+ jump_elapsed = -1.0
+ jump_cooldown = 0.0
  distance = 0.0
  tokens = 0
  collisions = 0
@@ -55,6 +62,19 @@ func move(direction: int) -> bool:
  lane = target
  cooldown = INPUT_COOLDOWN
  return true
+
+func jump() -> bool:
+ if state != "running" or jump_elapsed >= 0.0 or jump_cooldown > 0.0: return false
+ jump_elapsed = 0.0
+ jump_cooldown = JUMP_COOLDOWN
+ return true
+
+func jump_clearance() -> bool:
+ return jump_elapsed >= 0.10 and jump_elapsed <= 1.15
+
+func jump_height() -> float:
+ if jump_elapsed < 0.0: return 0.0
+ return sin(PI*jump_elapsed/JUMP_DURATION)*68.0
 
 func pause() -> void:
  if state in ["running", "countdown"]:
@@ -120,6 +140,10 @@ func tick(delta: float) -> void:
   return
  var dt := clampf(delta, 0.0, 1.0 / 30.0)
  cooldown = maxf(0.0, cooldown - dt)
+ jump_cooldown = maxf(0.0,jump_cooldown-dt)
+ if jump_elapsed >= 0.0:
+  jump_elapsed += dt
+  if jump_elapsed >= JUMP_DURATION: jump_elapsed = -1.0
  x = move_toward(x, float(lane), dt / CHANGE_TIME)
  speed = minf(CONFIG[difficulty].cap, speed + CONFIG[difficulty].accel * dt)
  distance += speed * dt
@@ -128,7 +152,7 @@ func tick(delta: float) -> void:
   var relative: float = row.at - distance
   if absf(relative) <= DANGER_HALF_DEPTH:
    for blocked in row.blocked:
-    if absf(x - float(blocked)) < 0.60:
+    if absf(x - float(blocked)) < 0.60 and not (row.kind in JUMPABLE_KINDS and jump_clearance()):
      hit()
      return
    if not row.collected and absf(relative) <= 28.0 and absf(x - float(row.safe)) < 0.42:

@@ -1,5 +1,7 @@
 extends RefCounted
 const TEXT = {
+ "jump":["Jump","छलाँग"],"airborne":["In air","हवा में"],"jump_wait":["Wait","रुकें"],"jump_ready":["Ready","तैयार"],
+ "jump_help":["Landscape controls: tap Jump or press Space/Up just before a low obstacle. Jump over crates, potholes, carts, monkeys and snakes. Cars and elephants still require a lane change. No double jump; wait for the button to become ready. Jump timing freezes while paused.","आड़ी स्क्रीन पर छलाँग बटन या Space/ऊपर वाला तीर दबाएँ। पेटी, गड्ढे, ठेले, बंदर और साँप के ऊपर छलाँग लगा सकते हैं। कार और हाथी से बचने के लिए लेन बदलें। दोहरी छलाँग नहीं है; बटन तैयार होने तक रुकें। विराम में छलाँग भी रुकती है।"],
  "garage":["Routes & Rickshaw", "रास्ते और रिक्शा"],
  "route":["Choose your route", "अपना रास्ता चुनें"],
  "route_bazaar":["Golden Bazaar", "सुनहरा बाज़ार"],

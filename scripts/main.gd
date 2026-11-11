@@ -26,7 +26,9 @@ var ui: Control
 var panel: VBoxContainer
 var hud: Label
 var speed_label: Label
+var jump_button: Button
 var countdown_label: Label
+const WORLD_OFFSET = Vector2(400,-80)
 var touch_start := Vector2.ZERO
 var touch_index := -1
 var effects_time := 0.0
@@ -46,19 +48,20 @@ func word(key: String) -> String:
  return Words.text(key, preferences.language)
 
 func _ready() -> void:
+ position = WORLD_OFFSET
  preferences = saves.load_data()
  add_child(sound)
  sound.configure(preferences)
- for action in ["move_left","move_right","pause","confirm"]:
+ for action in ["move_left","move_right","pause","confirm","jump"]:
   if not InputMap.has_action(action): InputMap.add_action(action)
- var mappings = {"move_left":[KEY_LEFT,KEY_A],"move_right":[KEY_RIGHT,KEY_D],"pause":[KEY_ESCAPE,KEY_P],"confirm":[KEY_ENTER]}
+ var mappings = {"move_left":[KEY_LEFT,KEY_A],"move_right":[KEY_RIGHT,KEY_D],"pause":[KEY_ESCAPE,KEY_P],"confirm":[KEY_ENTER],"jump":[KEY_SPACE,KEY_UP]}
  for action in mappings:
   for code in mappings[action]:
    var event := InputEventKey.new()
    event.physical_keycode = code
    InputMap.action_add_event(action,event)
  button_theme.default_font = load("res://assets/fonts/NotoSansDevanagari-Regular.ttf")
- button_theme.default_font_size = 19
+ button_theme.default_font_size = 24
  layer = CanvasLayer.new()
  add_child(layer)
  show_page("home")
@@ -86,6 +89,7 @@ func _unhandled_input(event: InputEvent) -> void:
  if page != "game" or sim.state != "running": return
  if event.is_action_pressed("move_left") and not event.is_echo(): sim.move(-1)
  elif event.is_action_pressed("move_right") and not event.is_echo(): sim.move(1)
+ elif event.is_action_pressed("jump") and not event.is_echo(): sim.jump()
  elif event is InputEventScreenTouch:
   if event.pressed and touch_index == -1:
    touch_index = event.index
@@ -109,6 +113,9 @@ func _physics_process(delta: float) -> void:
   saves.save_data(preferences)
   show_page("results")
   sound.cue("end")
+ if is_instance_valid(jump_button):
+  jump_button.disabled = sim.state != "running" or sim.jump_cooldown > 0.0
+  jump_button.text = word("jump")+" · "+word("airborne" if sim.jump_elapsed >= 0.0 else "jump_wait" if sim.jump_cooldown > 0.0 else "jump_ready")
  if is_instance_valid(speed_label): speed_label.text = "%03d" % int(sim.speed / 5.0)
  if is_instance_valid(hud): hud.text = "%s  %d    ◆ %d    %s  %d" % [word("score"),sim.score(),sim.tokens,word("best"),preferences.scores[level]]
  if is_instance_valid(countdown_label): countdown_label.text = "%s\n%d" % [word("countdown"),ceili(sim.countdown)] if sim.state == "countdown" else ""
@@ -131,13 +138,14 @@ func _clear_ui() -> void:
  ui.theme = button_theme
  layer.add_child(ui)
  hud = null
+ jump_button = null
  speed_label = null
  countdown_label = null
 
 func label(text: String, size: int = 19) -> Label:
  var item := Label.new()
  item.text = text
- item.add_theme_font_size_override("font_size",size)
+ item.add_theme_font_size_override("font_size",maxi(22,size))
  item.add_theme_color_override("font_color",PAPER)
  item.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -148,7 +156,8 @@ func label(text: String, size: int = 19) -> Label:
 func button(text: String, action: Callable, accent: bool = false) -> Button:
  var item := Button.new()
  item.text = text
- item.custom_minimum_size = Vector2(0,54)
+ if page == "game": item.focus_mode = Control.FOCUS_NONE
+ item.custom_minimum_size = Vector2(0,76)
  item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
  item.add_theme_color_override("font_color",INK if accent else PAPER)
  var box := StyleBoxFlat.new()
@@ -169,20 +178,20 @@ func button(text: String, action: Callable, accent: bool = false) -> Button:
 
 func make_panel() -> void:
  var background := Panel.new()
- background.position = Vector2(20,35)
- background.size = Vector2(440,815)
+ background.position = Vector2(280,26)
+ background.size = Vector2(720,668)
  var style := StyleBoxFlat.new()
  style.bg_color = Color(0.035,0.10,0.15,0.94)
  style.set_corner_radius_all(22)
  background.add_theme_stylebox_override("panel",style)
  ui.add_child(background)
  var scroll := ScrollContainer.new()
- scroll.position = Vector2(38,51)
- scroll.size = Vector2(404,779)
+ scroll.position = Vector2(306,45)
+ scroll.size = Vector2(668,630)
  scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
  ui.add_child(scroll)
  panel = VBoxContainer.new()
- panel.custom_minimum_size.x = 390
+ panel.custom_minimum_size.x = 646
  panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
  panel.add_theme_constant_override("separation",12)
  scroll.add_child(panel)
@@ -195,36 +204,41 @@ func show_page(name: String) -> void:
  _clear_ui()
  if name == "game":
   hud = Label.new()
-  hud.position = Vector2(12,14)
-  hud.size = Vector2(456,64)
+  hud.position = Vector2(28,24)
+  hud.size = Vector2(430,70)
   hud.add_theme_color_override("font_color",INK)
-  hud.add_theme_font_size_override("font_size",18)
+  hud.add_theme_font_size_override("font_size",22)
   hud.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
   ui.add_child(hud)
   panel = VBoxContainer.new()
-  panel.position = Vector2(367,77)
-  panel.size = Vector2(102,60)
+  panel.position = Vector2(1080,20)
+  panel.size = Vector2(170,76)
   ui.add_child(panel)
   button(word("pause"),pause_run)
   panel = VBoxContainer.new()
-  panel.position = Vector2(26,805)
-  panel.size = Vector2(138,70)
+  panel.position = Vector2(30,610)
+  panel.size = Vector2(170,80)
   ui.add_child(panel)
   button("← " + word("left"),func(): sim.move(-1))
   panel = VBoxContainer.new()
-  panel.position = Vector2(316,805)
-  panel.size = Vector2(138,70)
+  panel.position = Vector2(220,610)
+  panel.size = Vector2(170,80)
   ui.add_child(panel)
   button(word("right") + " →",func(): sim.move(1))
+  panel = VBoxContainer.new()
+  panel.position = Vector2(1020,610)
+  panel.size = Vector2(230,80)
+  ui.add_child(panel)
+  jump_button = button(word("jump"),func(): sim.jump(),true)
   countdown_label = Label.new()
-  countdown_label.position = Vector2(100,330)
+  countdown_label.position = Vector2(500,270)
   countdown_label.size = Vector2(280,150)
   countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
   countdown_label.add_theme_font_size_override("font_size",40)
   countdown_label.add_theme_color_override("font_color",PAPER)
   ui.add_child(countdown_label)
   speed_label = Label.new()
-  speed_label.position = Vector2(198,813)
+  speed_label.position = Vector2(900,620)
   speed_label.size = Vector2(84,46)
   speed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
   speed_label.add_theme_font_size_override("font_size",30)
@@ -291,6 +305,7 @@ func show_page(name: String) -> void:
    label(word("tutorial_text"))
    label(word("tutorial_note"))
    label(word("animals"))
+   label(word("jump_help"))
    button(word("play"),start_run,true)
    button(word("home"),func(): show_page("home"))
   "pause":
@@ -400,6 +415,16 @@ func lane_x(value: float) -> float:
  return 148.0 + value * 92.0
 
 func _draw() -> void:
+ draw_set_transform(Vector2.ZERO)
+ # Keep world art at its original aspect ratio; CanvasLayer UI uses landscape pixels.
+ draw_rect(Rect2(-400,80,1280,720),RouteArt.GROUND[preferences.route])
+ var street_travel: float = sim.distance if page in ["game","pause","results"] else 0.0
+ for column in [-360.0,-240.0,-120.0,510.0,630.0,750.0]:
+  for i in range(-1,5):
+   var y := float(i*210)+fmod(street_travel*0.6,210.0)
+   draw_texture_rect(RouteArt.FACADES[preferences.route],Rect2(column,y,88,158),false)
+   draw_texture_rect(STALL_ART[posmod(i,4)],Rect2(column-3,y+104,94,105),false)
+ if preferences.evening: draw_rect(Rect2(-400,80,1280,720),Color(0.08,0.10,0.24,0.32))
  draw_rect(Rect2(0,0,480,900),RouteArt.GROUND[preferences.route])
  var travel: float = sim.distance if page in ["game","pause","results"] else 0.0
  draw_rect(Rect2(95,0,290,900),Color("283c49"))
@@ -434,17 +459,23 @@ func _draw() -> void:
  var bob: float = sin(effects_time*9.0)*1.5 if page == "game" and not preferences.reduce_effects and sim.state == "running" else 0.0
  if page == "game" and sim.state == "running" and not preferences.reduce_effects:
   market_life.draw_dust(self,Vector2(lane_x(sim.x),700),effects_time)
- draw_rickshaw(Vector2(lane_x(sim.x),700+bob))
+ if sim.jump_elapsed >= 0.0:
+  draw_set_transform(Vector2(lane_x(sim.x),710),0,Vector2(1,0.35))
+  draw_circle(Vector2.ZERO,32,Color(0.03,0.10,0.14,0.34))
+  draw_set_transform(Vector2.ZERO)
+ draw_rickshaw(Vector2(lane_x(sim.x),700+bob-sim.jump_height()))
  if particle_time > 0.0 and not preferences.reduce_effects:
   for i in range(12):
    var angle := float(i)*TAU/12.0
    draw_circle(Vector2(lane_x(sim.x),650)+Vector2(cos(angle),sin(angle))*(1.0-particle_time/0.55)*70,particle_time*7,GOLD)
  if page == "game":
-  draw_style_box(round_box(PAPER,16),Rect2(7,7,466,67))
-  draw_style_box(round_box(INK,18),Rect2(184,801,112,75))
-  draw_arc(Vector2(240,853),42,PI+0.2,TAU-0.2,24,Color("356273"),3,true)
+  # Cancel the world offset for HUD backgrounds, matching the CanvasLayer controls.
+  draw_set_transform(-WORLD_OFFSET)
+  draw_style_box(round_box(PAPER,16),Rect2(18,14,450,86))
+  draw_style_box(round_box(INK,18),Rect2(886,608,112,85))
+  draw_arc(Vector2(942,660),42,PI+0.2,TAU-0.2,24,Color("356273"),3,true)
   var speed_fraction: float = clampf(sim.speed / float(Sim.CONFIG[level].cap),0.0,1.0)
-  draw_arc(Vector2(240,853),42,PI+0.2,PI+0.2+speed_fraction*(PI-0.4),24,MINT,3,true)
+  draw_arc(Vector2(942,660),42,PI+0.2,PI+0.2+speed_fraction*(PI-0.4),24,MINT,3,true)
 
 func draw_stall(at: Vector2, index: int) -> void:
  draw_texture_rect(RouteArt.FACADES[preferences.route],Rect2(at+Vector2(3,0),Vector2(88,158)),false)
@@ -476,6 +507,10 @@ func round_box(color: Color, radius: int) -> StyleBoxFlat:
  return box
 
 func draw_hazard(at: Vector2, kind: int) -> void:
+ if kind in Sim.JUMPABLE_KINDS:
+  var marker := at+Vector2(0,-65)
+  draw_circle(marker,13,INK)
+  draw_polyline(PackedVector2Array([marker+Vector2(-6,3),marker+Vector2(0,-4),marker+Vector2(6,3)]),MINT,2.5,true)
  if kind >= 4 and kind < Sim.HAZARD_COUNT:
   # An outlined footprint signals the blocked lane for smaller animals too.
   # Only ears/tails move inside this footprint, never the obstacle position.

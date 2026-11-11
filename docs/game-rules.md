@@ -21,3 +21,7 @@ Focus loss/background pauses immediately, including during a resume countdown. R
 ### Animal obstacles
 
 Obstacle kinds are crate, pothole, cart, car, elephant, monkey and snake. Each blocked lane uses the same collision envelope regardless of artwork. Animals do not chase or cross lanes; only decorative details move. Gold footprints identify animal obstacles. Avoid them by switching lanes. Circus tents, flags, birds and kites are decorative and cannot end a run. No injury effects are shown. The seven-kind RNG range produces different layouts from earlier four-kind builds for a given seed; same-version replay remains deterministic.
+
+### Landscape and player jump
+
+Landscape canvas is 1280×720, with the existing world translated rather than stretched; the player sits at screen (640,620). Touch Jump or Space/Up initiates a 1.25-second arc with a 1.60-second takeoff cooldown. Collision clearance is active from 0.10 to 1.15 seconds, for crates/potholes/carts/monkeys/snakes only. Mint upward markers identify those hazards. Cars and elephants remain solid. Jump progress and cooldown advance only in running state and reset on restart. Ground shadow and jump arc are essential feedback, including under Reduce Effects. Scoring, lane interpolation and safe-route generation remain unchanged.

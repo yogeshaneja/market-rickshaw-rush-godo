@@ -14,5 +14,10 @@
   "audioPayloadBytes": 73000,
   "audioAssets": "original synthesis bundled; provenance and CC0 output notice prepared",
   "audioListeningAndAndroidInterruptions": "pending",
-  "routeAndLightingDeviceReview": "pending"
+  "routeAndLightingDeviceReview": "pending",
+  "latestFocusedValidation": {
+    "checks": 35,
+    "scope": "landscape/jump smoke; prior broad-suite counts above are historical",
+    "androidLandscapeAndJumpFeel": "pending"
+  }
 }
