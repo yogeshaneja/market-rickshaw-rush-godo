@@ -10,6 +10,8 @@ const INPUT_COOLDOWN = 0.26
 const REACTION_MARGIN = 0.6
 const DANGER_HALF_DEPTH = 80.0
 const TOKEN_BONUS = 25
+# 0 crate, 1 pothole, 2 cart, 3 car, 4 elephant, 5 monkey, 6 snake.
+const HAZARD_COUNT = 7
 var state: String = "ready"
 var difficulty: int = 0
 var lane: int = 1
@@ -97,7 +99,7 @@ func _fill() -> void:
   if rng.randi_range(0, 1) == 1:
    candidates.reverse()
   var blocked: Array = candidates.slice(0, int(CONFIG[difficulty].hazards))
-  var row: Dictionary = {"id":row_id,"at":next_row,"safe":candidate,"blocked":blocked,"kind":rng.randi_range(0,3),"collected":false}
+  var row: Dictionary = {"id":row_id,"at":next_row,"safe":candidate,"blocked":blocked,"kind":rng.randi_range(0,HAZARD_COUNT-1),"collected":false}
   # Spacing is fixed by cap, not current speed, and cannot shrink at high speed.
   if not valid_row(row, safe_lane, next_row - float(CONFIG[difficulty].gap)):
    push_error("Unsafe configured spawn spacing")

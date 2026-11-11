@@ -14,6 +14,7 @@ func _initialize() -> void:
  test_lanes()
  test_seeds_and_safety()
  test_pause_score_collision()
+ test_animal_obstacles()
  test_fixed_render_rates()
  test_saves()
  test_localization()
@@ -34,6 +35,7 @@ func test_lanes() -> void:
 
 func test_seeds_and_safety() -> void:
  var rows_checked := 0
+ var seen_kinds: Dictionary = {}
  for difficulty in range(3):
   for seed_value in range(100):
    var a = Sim.new()
@@ -50,6 +52,7 @@ func test_seeds_and_safety() -> void:
     check(row.blocked.size() < 3,"no full-width barrier")
     last_safe = row.safe
     previous_distance = row.at
+    seen_kinds[row.kind] = true
     rows_checked += 1
     # Generate an arbitrary future row without allowing collision to terminate the test.
     a.distance = a.next_row-1700.0
@@ -57,6 +60,7 @@ func test_seeds_and_safety() -> void:
    var invalid: Dictionary = a.rows[-1].duplicate(true)
    invalid.blocked = [0,1,2]
    check(not a.valid_row(invalid,last_safe,previous_distance),"reject full barrier")
+ for kind in range(Sim.HAZARD_COUNT): check(seen_kinds.has(kind),"all obstacle kinds occur in seeded routes")
  print("Spawn safety: %d generated rows across 300 seed/difficulty combinations" % rows_checked)
  # Play long routes by steering through the guaranteed safe corridor at the right time.
  for difficulty in range(3):
@@ -140,3 +144,24 @@ func test_saves() -> void:
 func test_localization() -> void:
  for key in Words.TEXT:
   check(Words.TEXT[key].size() == 2 and not Words.TEXT[key][0].is_empty() and not Words.TEXT[key][1].is_empty(),"paired English/Hindi strings")
+
+func test_animal_obstacles() -> void:
+ for level in range(3):
+  for kind in range(4,Sim.HAZARD_COUNT):
+   var sim = Sim.new()
+   sim.begin(level,1729)
+   sim.rows = [{"at":0.0,"safe":0,"blocked":[1],"kind":kind,"collected":false,"id":0}]
+   sim.next_row = 1000000.0
+   sim.pause()
+   sim.tick(1.0/60.0)
+   check(sim.collisions == 0 and sim.distance == 0.0,"paused animal does not collide")
+   sim.state = "running"
+   sim.tick(1.0/60.0)
+   check(sim.state == "over" and sim.collisions == 1,"animal in blocked lane ends run")
+   sim.tick(1.0/60.0)
+   check(sim.collisions == 1,"animal collision counted once")
+   sim.begin(level,1729)
+   sim.rows = [{"at":0.0,"safe":1,"blocked":[0,2],"kind":kind,"collected":false,"id":0}]
+   sim.next_row = 1000000.0
+   sim.tick(1.0/60.0)
+   check(sim.state == "running" and sim.collisions == 0,"animal obstacles preserve safe middle lane")

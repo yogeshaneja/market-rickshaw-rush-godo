@@ -15,12 +15,16 @@
       "assets/art/tea-stall.svg",
       "assets/art/tree.svg",
       "assets/art/umbrella.svg",
-      "assets/art/kite.svg"
+      "assets/art/kite.svg",
+      "assets/art/elephant.svg",
+      "assets/art/monkey.svg",
+      "assets/art/snake.svg",
+      "assets/art/circus-tent.svg"
     ],
     "thirdPartyCharacters": false,
     "downloadedArt": false,
     "audio": "none; silent prototype",
-    "description": "Original vector illustrations: four market stalls with striped awnings, produce, shop signs and plants; top-down rickshaw, car and fruit cart. No external image downloads or branded characters. Additional original tea stall, tree, umbrella and kite illustrations, native drawn birds, garlands, steam and dust. Flying objects are decorative only."
+    "description": "Original vector illustrations: four market stalls with striped awnings, produce, shop signs and plants; top-down rickshaw, car and fruit cart. No external image downloads or branded characters. Additional original tea stall, tree, umbrella and kite illustrations, native drawn birds, garlands, steam and dust. Flying objects are decorative only. Original stylized elephant, monkey, snake and circus-tent artwork. No branded circus assets or external animal imagery."
   },
   "font": {
     "file": "assets/fonts/NotoSansDevanagari-Regular.ttf",

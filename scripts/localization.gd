@@ -1,5 +1,6 @@
 extends RefCounted
 const TEXT = {
+ "animals":["Give animals space: switch lanes around elephants, monkeys and snakes. Gold footprints mark blocked lanes. A collision ends the run without injury animation. Circus tents and flying objects are scenery.","जानवरों को जगह दें: हाथी, बंदर और साँप से बचने के लिए लेन बदलें। सुनहरे घेरे बाधा वाली लेन बताते हैं। टक्कर पर दौड़ समाप्त होती है; चोट का दृश्य नहीं दिखता। सर्कस के तंबू और उड़ती चीज़ें सिर्फ सजावट हैं।"],
  "title":["Market Rickshaw Rush","बाज़ार रिक्शा रश"],
  "tag":["YOUR LANE. YOUR RHYTHM.","आपकी लेन। आपकी रफ्तार।"],
  "intro":["Race through a colourful fictional bazaar. Find the gap. Collect delivery tokens.","रंगीन काल्पनिक बाज़ार में दौड़ें। खुला रास्ता चुनें। डिलीवरी टोकन जुटाएँ।"],

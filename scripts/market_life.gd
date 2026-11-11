@@ -4,6 +4,7 @@ const TEA = preload("res://assets/art/tea-stall.svg")
 const TREE = preload("res://assets/art/tree.svg")
 const UMBRELLA = preload("res://assets/art/umbrella.svg")
 const KITE = preload("res://assets/art/kite.svg")
+const CIRCUS = preload("res://assets/art/circus-tent.svg")
 const CREAM = Color("fff0cc")
 
 func draw_market(canvas: Node2D, time: float, travel: float, reduced: bool) -> void:
@@ -19,6 +20,13 @@ func draw_market(canvas: Node2D, time: float, travel: float, reduced: bool) -> v
    for puff in range(3):
     var phase := fmod(t*0.4+float(puff)/3.0,1.0)
     canvas.draw_arc(Vector2(x+26+sin(phase*5.0)*3,y+165-phase*19),3+phase*3,PI*0.2,PI*1.4,8,Color(1,0.94,0.8,(1-phase)*0.45),1.5,true)
+ # Circus tents alternate on the pavement, never within a drivable lane.
+ for side in range(2):
+  var tent_y := fposmod(travel+side*690.0,1380.0)-160.0
+  canvas.draw_texture_rect(CIRCUS,Rect2(1 if side==0 else 387,tent_y,92,133),false)
+  var flag_x := 47.0 if side==0 else 433.0
+  var wave := sin(t*3.0+side)*3.0
+  canvas.draw_colored_polygon(PackedVector2Array([Vector2(flag_x,tent_y+2),Vector2(flag_x+20,tent_y+2+wave),Vector2(flag_x+12,tent_y+9+wave),Vector2(flag_x,tent_y+9)]),Color("55b8a7"))
  # Flower garlands remain on the pavement and sway gently, never over hazards.
  for side in [9.0,464.0]:
   for j in range(12):

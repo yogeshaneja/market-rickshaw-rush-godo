@@ -17,3 +17,7 @@ This guarantees a constructed reachable path, not safe movement after arbitrary 
 Score = floor(distance / 10) + 25 × tokens. Running alone advances distance; pause, countdown and game over do not. Each row token has a collected guard. The first valid collision transitions to over and later hits return false. Main records the best result once on the running→over transition. Restart fully resets the run and RNG.
 
 Focus loss/background pauses immediately, including during a resume countdown. Return does not auto-resume. Explicit resume starts a fresh 3-second countdown with simulation stopped. Best scores and settings survive a restart; active runs do not. Save validation rejects unknown versions, invalid language/effects fields, malformed score arrays, fractional, negative, non-finite and excessive scores. Writes flush a temporary file and rename it; actual write/overwrite is tested. Failures remain visible and are not claimed as successful persistence.
+
+### Animal obstacles
+
+Obstacle kinds are crate, pothole, cart, car, elephant, monkey and snake. Each blocked lane uses the same collision envelope regardless of artwork. Animals do not chase or cross lanes; only decorative details move. Gold footprints identify animal obstacles. Avoid them by switching lanes. Circus tents, flags, birds and kites are decorative and cannot end a run. No injury effects are shown. The seven-kind RNG range produces different layouts from earlier four-kind builds for a given seed; same-version replay remains deterministic.

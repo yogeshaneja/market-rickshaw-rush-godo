@@ -7,6 +7,7 @@ const StoreLink = preload("res://scripts/store_link.gd")
 const RELEASE = preload("res://config/release.json")
 const RICKSHAW_ART = preload("res://assets/art/rickshaw.svg")
 const CAR_ART = preload("res://assets/art/car.svg")
+const ANIMAL_ART = [preload("res://assets/art/elephant.svg"),preload("res://assets/art/monkey.svg"),preload("res://assets/art/snake.svg")]
 const CART_ART = preload("res://assets/art/cart.svg")
 const STALL_ART = [preload("res://assets/art/stall-0.svg"),preload("res://assets/art/stall-1.svg"),preload("res://assets/art/stall-2.svg"),preload("res://assets/art/stall-3.svg")]
 const Words = preload("res://scripts/localization.gd")
@@ -244,6 +245,7 @@ func show_page(name: String) -> void:
    label(word("tutorial"),25)
    label(word("tutorial_text"))
    label(word("tutorial_note"))
+   label(word("animals"))
    button(word("play"),start_run,true)
    button(word("home"),func(): show_page("home"))
   "pause":
@@ -387,6 +389,26 @@ func round_box(color: Color, radius: int) -> StyleBoxFlat:
  return box
 
 func draw_hazard(at: Vector2, kind: int) -> void:
+ if kind >= 4 and kind < Sim.HAZARD_COUNT:
+  # An outlined footprint signals the blocked lane for smaller animals too.
+  # Only ears/tails move inside this footprint, never the obstacle position.
+  draw_set_transform(at,0,Vector2(1,0.6))
+  draw_circle(Vector2(0,16),35,Color(0.08,0.18,0.23,0.32))
+  draw_arc(Vector2(0,16),35,0,TAU,32,Color("f6bd4b"),2,true)
+  draw_set_transform(Vector2.ZERO)
+  var size := Vector2(68,104) if kind == 4 else Vector2(64,78)
+  draw_texture_rect(ANIMAL_ART[kind-4],Rect2(at-size*0.5,size),false)
+  if not preferences.reduce_effects:
+   var twitch: float = sin(effects_time*4.0+kind)*3.0
+   if kind == 4:
+    draw_arc(at+Vector2(-21,-23),7,PI*0.5,PI*1.5,8,Color("b2c5cb"),2,true)
+    draw_arc(at+Vector2(21,-23),7,-PI*0.5,PI*0.5,8,Color("b2c5cb"),2,true)
+    draw_line(at+Vector2(-22,-29),at+Vector2(-25+twitch,-22),Color("718ca2"),3,true)
+   elif kind == 5:
+    draw_arc(at+Vector2(23,16),6+twitch*0.4,-PI*0.5,PI,12,Color("c18a57"),3,true)
+   else:
+    draw_line(at+Vector2(-3,-28),at+Vector2(-8+twitch,-33),Color("e77b75"),1.5,true)
+  return
  match kind:
   0:
    draw_rect(Rect2(at-Vector2(25,30),Vector2(50,60)),Color("bd8050"))
