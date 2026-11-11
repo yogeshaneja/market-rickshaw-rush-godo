@@ -1,0 +1,12 @@
+Original procedural audio for Market Rickshaw Rush
+
+Files: bazaar-loop.ogg, market-air.ogg, rickshaw-bell.ogg, coin.ogg, run-end.ogg
+Composition and recording: original source synthesis authored for this project with AI assistance.
+No third-party compositions, performances, recordings or samples were used.
+
+The original generated audio outputs are offered under CC0 1.0 Universal, to the extent any rights apply.
+You may use, modify and redistribute these audio outputs, including in commercial apps, without attribution or royalties.
+No exclusivity or warranty of copyrightability is asserted. This notice does not cover the Godot engine, fonts or other assets.
+
+CC0 reference and legal terms: https://creativecommons.org/publicdomain/zero/1.0/
+Reproducible synthesis source: tools/generate_audio.py

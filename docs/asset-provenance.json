@@ -1,0 +1,54 @@
+{
+  "artwork": {
+    "creator": "Original source geometry authored for this project with AI assistance",
+    "files": [
+      "scripts/main.gd",
+      "assets/icon.svg",
+      "assets/art/car.svg",
+      "assets/art/cart.svg",
+      "assets/art/rickshaw.svg",
+      "assets/art/stall-0.svg",
+      "assets/art/stall-1.svg",
+      "assets/art/stall-2.svg",
+      "assets/art/stall-3.svg",
+      "scripts/market_life.gd",
+      "assets/art/tea-stall.svg",
+      "assets/art/tree.svg",
+      "assets/art/umbrella.svg",
+      "assets/art/kite.svg",
+      "assets/art/elephant.svg",
+      "assets/art/monkey.svg",
+      "assets/art/snake.svg",
+      "assets/art/circus-tent.svg",
+      "assets/art/facade-0.svg",
+      "assets/art/facade-1.svg",
+      "assets/art/facade-2.svg",
+      "assets/art/palm.svg",
+      "assets/art/rickshaw-coral.svg",
+      "assets/art/rickshaw-indigo.svg",
+      "assets/art/shopper.svg",
+      "assets/art/vendor.svg",
+      "scripts/route_art.gd"
+    ],
+    "thirdPartyCharacters": false,
+    "downloadedArt": false,
+    "audio": "Original procedural music/SFX, documented separately in docs/audio-provenance.json",
+    "description": "Original vector illustrations: four market stalls with striped awnings, produce, shop signs and plants; top-down rickshaw, car and fruit cart. No external image downloads or branded characters. Additional original tea stall, tree, umbrella and kite illustrations, native drawn birds, garlands, steam and dust. Flying objects are decorative only. Original stylized elephant, monkey, snake and circus-tent artwork. No branded circus assets or external animal imagery. Three original facade palettes, palms, two original people illustrations, decorated rickshaw skins, native marigolds, warm/evening lighting, coastal waves and decorative rain."
+  },
+  "font": {
+    "file": "assets/fonts/NotoSansDevanagari-Regular.ttf",
+    "family": "Noto Sans Devanagari Regular",
+    "creator": "Google/Noto contributors",
+    "source": "Installed fonts-noto-core font, upstream https://github.com/notofonts/devanagari",
+    "license": "SIL Open Font License 1.1",
+    "licenseFile": "assets/fonts/OFL.txt",
+    "modifications": "none",
+    "sha256": "79a470365ccb210fa3c7d8d8ff2e005ef9d983cfd067f735a0caf7e15070ca9f",
+    "redistribution": "OFL-licensed bundled font with notice retained"
+  },
+  "engineNotices": [
+    "docs/licenses/GODOT.txt",
+    "docs/licenses/THIRD-PARTY.json"
+  ],
+  "review": "Independent editorial/rights sign-off pending; no claim of exclusivity in generic shapes."
+}

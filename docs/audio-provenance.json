@@ -1,0 +1,82 @@
+{
+  "title": "Bazaar Morning",
+  "description": "Original short pentatonic flute-like oscillator melody, drum-inspired synthesized percussion and drone; not a claim of authentic acoustic instruments or a traditional arrangement. Abstract soft market chimes/rustle, no sampled speech.",
+  "files": [
+    {
+      "file": "assets/audio/bazaar-loop.ogg",
+      "creator": "Original source synthesis authored for this project with AI assistance",
+      "source": "tools/generate_audio.py (no samples or external melodies)",
+      "license": "CC0-1.0 to the extent rights apply",
+      "licenseFile": "assets/audio/LICENSE.txt",
+      "compositionRights": "Original composed note events and rhythms in the generator; no third-party composition used",
+      "recordingRights": "Synthesized directly from oscillators and seeded noise; no third-party performance or recording used",
+      "modifications": "Mono Vorbis encoding via ffmpeg; no third-party audio modifications",
+      "attribution": "Not required for these original outputs; in-app credit included",
+      "bytes": 42285,
+      "sha256": "0ec4ec25b8a95fc38f15dfdc58fa1e58bb8219d1834f56685627955fedd505cd",
+      "durationSeconds": 19.2,
+      "sampleRate": "22050"
+    },
+    {
+      "file": "assets/audio/coin.ogg",
+      "creator": "Original source synthesis authored for this project with AI assistance",
+      "source": "tools/generate_audio.py (no samples or external melodies)",
+      "license": "CC0-1.0 to the extent rights apply",
+      "licenseFile": "assets/audio/LICENSE.txt",
+      "compositionRights": "Original composed note events and rhythms in the generator; no third-party composition used",
+      "recordingRights": "Synthesized directly from oscillators and seeded noise; no third-party performance or recording used",
+      "modifications": "Mono Vorbis encoding via ffmpeg; no third-party audio modifications",
+      "attribution": "Not required for these original outputs; in-app credit included",
+      "bytes": 4012,
+      "sha256": "bbd8c1f0f7bf75f272182215f2fe2d1aa7f1e77d4746f6ba6825b62c9bedfe4b",
+      "durationSeconds": 0.32,
+      "sampleRate": "22050"
+    },
+    {
+      "file": "assets/audio/market-air.ogg",
+      "creator": "Original source synthesis authored for this project with AI assistance",
+      "source": "tools/generate_audio.py (no samples or external melodies)",
+      "license": "CC0-1.0 to the extent rights apply",
+      "licenseFile": "assets/audio/LICENSE.txt",
+      "compositionRights": "Original composed note events and rhythms in the generator; no third-party composition used",
+      "recordingRights": "Synthesized directly from oscillators and seeded noise; no third-party performance or recording used",
+      "modifications": "Mono Vorbis encoding via ffmpeg; no third-party audio modifications",
+      "attribution": "Not required for these original outputs; in-app credit included",
+      "bytes": 17351,
+      "sha256": "4daeac2e72fc84343235b247ac0689f307eef1b15ec3e49ea1e1f47282493fb3",
+      "durationSeconds": 6.0,
+      "sampleRate": "22050"
+    },
+    {
+      "file": "assets/audio/rickshaw-bell.ogg",
+      "creator": "Original source synthesis authored for this project with AI assistance",
+      "source": "tools/generate_audio.py (no samples or external melodies)",
+      "license": "CC0-1.0 to the extent rights apply",
+      "licenseFile": "assets/audio/LICENSE.txt",
+      "compositionRights": "Original composed note events and rhythms in the generator; no third-party composition used",
+      "recordingRights": "Synthesized directly from oscillators and seeded noise; no third-party performance or recording used",
+      "modifications": "Mono Vorbis encoding via ffmpeg; no third-party audio modifications",
+      "attribution": "Not required for these original outputs; in-app credit included",
+      "bytes": 4873,
+      "sha256": "3749540d1fab3d7b5ad2ecd29969254433b3245bcd895a8680911049a9e9f132",
+      "durationSeconds": 0.8,
+      "sampleRate": "22050"
+    },
+    {
+      "file": "assets/audio/run-end.ogg",
+      "creator": "Original source synthesis authored for this project with AI assistance",
+      "source": "tools/generate_audio.py (no samples or external melodies)",
+      "license": "CC0-1.0 to the extent rights apply",
+      "licenseFile": "assets/audio/LICENSE.txt",
+      "compositionRights": "Original composed note events and rhythms in the generator; no third-party composition used",
+      "recordingRights": "Synthesized directly from oscillators and seeded noise; no third-party performance or recording used",
+      "modifications": "Mono Vorbis encoding via ffmpeg; no third-party audio modifications",
+      "attribution": "Not required for these original outputs; in-app credit included",
+      "bytes": 4479,
+      "sha256": "d94839e24662b9b76ce64a02beb91fcc331328ea00e617920a8d5572d8504fe2",
+      "durationSeconds": 0.8,
+      "sampleRate": "22050"
+    }
+  ],
+  "review": "Generated locally from documented source; imported by actual Godot. Listening, loop-transition and Android interruption/device review remain pending. No third-party music license was inferred or verified."
+}
