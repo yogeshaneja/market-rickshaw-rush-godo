@@ -1,4 +1,8 @@
 extends Node2D
+const RouteArt = preload("res://scripts/route_art.gd")
+const GameAudio = preload("res://scripts/game_audio.gd")
+var route_art = RouteArt.new()
+var sound = GameAudio.new()
 const MarketLife = preload("res://scripts/market_life.gd")
 var market_life = MarketLife.new()
 const Sim = preload("res://scripts/runner_sim.gd")
@@ -43,6 +47,8 @@ func word(key: String) -> String:
 
 func _ready() -> void:
  preferences = saves.load_data()
+ add_child(sound)
+ sound.configure(preferences)
  for action in ["move_left","move_right","pause","confirm"]:
   if not InputMap.has_action(action): InputMap.add_action(action)
  var mappings = {"move_left":[KEY_LEFT,KEY_A],"move_right":[KEY_RIGHT,KEY_D],"pause":[KEY_ESCAPE,KEY_P],"confirm":[KEY_ENTER]}
@@ -59,7 +65,10 @@ func _ready() -> void:
  get_tree().auto_accept_quit = false
 
 func _notification(what: int) -> void:
+ if what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_APPLICATION_RESUMED:
+  if is_instance_valid(sound): sound.set_focused(true)
  if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+  if is_instance_valid(sound): sound.set_focused(false)
   if sim.state in ["running","countdown"]:
    sim.pause()
    touch_index = -1
@@ -91,11 +100,15 @@ func _physics_process(delta: float) -> void:
  var old_state: String = sim.state
  var old_tokens: int = sim.tokens
  sim.tick(delta)
- if sim.tokens > old_tokens: particle_time = 0.55
+ if sim.tokens > old_tokens:
+  particle_time = 0.55
+  sound.cue("coin")
+ sound.set_active(sim.state == "running")
  if old_state == "running" and sim.state == "over":
   preferences.scores[level] = maxi(preferences.scores[level],sim.score())
   saves.save_data(preferences)
   show_page("results")
+  sound.cue("end")
  if is_instance_valid(speed_label): speed_label.text = "%03d" % int(sim.speed / 5.0)
  if is_instance_valid(hud): hud.text = "%s  %d    ◆ %d    %s  %d" % [word("score"),sim.score(),sim.tokens,word("best"),preferences.scores[level]]
  if is_instance_valid(countdown_label): countdown_label.text = "%s\n%d" % [word("countdown"),ceili(sim.countdown)] if sim.state == "countdown" else ""
@@ -176,6 +189,8 @@ func make_panel() -> void:
 
 func show_page(name: String) -> void:
  page = name
+ sound.cancel_preview()
+ sound.set_active(name == "game" and sim.state == "running")
  touch_index = -1
  _clear_ui()
  if name == "game":
@@ -223,7 +238,7 @@ func show_page(name: String) -> void:
  match name:
   "home":
    var hero := TextureRect.new()
-   hero.texture = RICKSHAW_ART
+   hero.texture = RouteArt.SKINS[preferences.skin]
    hero.custom_minimum_size = Vector2(0,142)
    hero.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
    hero.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -236,11 +251,41 @@ func show_page(name: String) -> void:
     var choice: int = i
     button(("● " if level == i else "○ ") + word(["easy","normal","hard"][i]) + " · " + word("best") + " " + str(preferences.scores[i]),func(): level = choice; show_page("home"))
    button(word("play"),start_run,true)
+   label(word(["route_bazaar","route_coast","route_rain"][preferences.route]),17)
+   button(word("garage"),func(): show_page("garage"))
    button(word("tutorial"),func(): show_page("tutorial"))
    button(word("settings"),func(): show_page("settings"))
    button(word("about"),func(): show_page("about"))
    label(word("updates"),16)
    if StoreLink.available(RELEASE.data): button(word("store"),open_store)
+  "garage":
+   label(word("garage"),26)
+   var preview := TextureRect.new()
+   preview.texture = RouteArt.SKINS[preferences.skin]
+   preview.custom_minimum_size = Vector2(0,130)
+   preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+   preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+   panel.add_child(preview)
+   label(word("route"),21)
+   for i in range(3):
+    var choice: int = i
+    button(("● " if preferences.route == i else "○ ")+word(["route_bazaar","route_coast","route_rain"][i]),func(): set_choice("route",choice))
+   label(word("route_note"),16)
+   label(word("festival"),21)
+   for i in range(3):
+    var choice: int = i
+    button(("● " if preferences.festival == i else "○ ")+word(["festival_classic","festival_kites","festival_lights"][i]),func(): set_choice("festival",choice))
+   button(word("evening")+": "+word("on" if preferences.evening else "off"),func(): set_choice("evening",not preferences.evening))
+   label(word("paint"),21)
+   for i in range(3):
+    var choice: int = i
+    var unlocked: bool = saves.skin_unlocked(preferences,i)
+    var text: String = word(["paint_gold","paint_indigo","paint_coral"][i])
+    if not unlocked: text += " · "+word("unlock")+" "+str([0,300,800][i])
+    var item := button(("● " if preferences.skin == i else "○ ")+text,func(): set_choice("skin",choice))
+    item.disabled = not unlocked
+   label(word("cosmetic"),16)
+   button(word("home"),func(): show_page("home"))
   "tutorial":
    label(word("tutorial"),25)
    label(word("tutorial_text"))
@@ -267,15 +312,23 @@ func show_page(name: String) -> void:
    button("हिन्दी" + (" ●" if preferences.language == "hi" else ""),func(): set_language("hi"))
    button(word("effects") + ": " + word("on" if preferences.reduce_effects else "off"),func(): preferences.reduce_effects = not preferences.reduce_effects; saves.save_data(preferences); show_page("settings"))
    label(word("effects_help"),17)
+   label(word("audio"),24)
+   button(word("music")+": "+word("on" if preferences.music_on else "off"),func(): set_audio("music_on",not preferences.music_on))
+   audio_slider("music_volume",word("music_volume"))
+   button(word("sfx")+": "+word("on" if preferences.sfx_on else "off"),func(): set_audio("sfx_on",not preferences.sfx_on))
+   audio_slider("sfx_volume",word("sfx_volume"))
+   button(word("preview_audio"),sound.preview)
+   label(word("audio_note"),16)
    if reset_pending:
     label(word("reset_question"))
-    button(word("confirm"),func(): preferences = saves.reset_scores(preferences); saves.save_data(preferences); reset_pending = false; show_page("settings"))
+    button(word("confirm"),func(): preferences = saves.reset_scores(preferences); preferences.skin = 0; saves.save_data(preferences); reset_pending = false; show_page("settings"))
     button(word("cancel"),func(): reset_pending = false; show_page("settings"))
    else: button(word("reset"),func(): reset_pending = true; show_page("settings"))
    label(word("saved"),16)
    button(word("home"),func(): reset_pending = false; show_page("home"))
   "about":
    label(word("about_text"),18)
+   label(word("audio_credit"),17)
    label(word("privacy"),18)
    label(word("fiction"),17)
    if StoreLink.available(RELEASE.data): button(word("store"),open_store)
@@ -297,6 +350,32 @@ func show_page(name: String) -> void:
   screen_tween = create_tween()
   screen_tween.tween_property(ui,"modulate:a",1.0,0.24)
 
+func audio_slider(key: String, caption: String) -> void:
+ label(caption,17)
+ var slider := HSlider.new()
+ slider.min_value = 0.0
+ slider.max_value = 1.0
+ slider.step = 0.05
+ slider.value = preferences[key]
+ slider.custom_minimum_size = Vector2(0,48)
+ panel.add_child(slider)
+ # Commit after interaction, not one disk write for every slider tick.
+ slider.value_changed.connect(func(value: float): preferences[key] = value; sound.configure(preferences))
+ slider.drag_ended.connect(func(_changed: bool): saves.save_data(preferences))
+ slider.focus_exited.connect(func(): saves.save_data(preferences))
+
+func set_audio(key: String, value: Variant) -> void:
+ preferences[key] = value
+ sound.configure(preferences)
+ saves.save_data(preferences)
+ show_page("settings")
+
+func set_choice(key: String, value: Variant) -> void:
+ if key == "skin" and not saves.skin_unlocked(preferences,int(value)): return
+ preferences[key] = value
+ saves.save_data(preferences)
+ show_page("garage")
+
 func set_language(language: String) -> void:
  preferences.language = language
  saves.save_data(preferences)
@@ -307,6 +386,7 @@ func start_run() -> void:
  particle_time = 0.0
  reset_pending = false
  show_page("game")
+ sound.cue("bell")
 
 func pause_run() -> void:
  sim.pause()
@@ -320,10 +400,10 @@ func lane_x(value: float) -> float:
  return 148.0 + value * 92.0
 
 func _draw() -> void:
- draw_rect(Rect2(0,0,480,900),Color("d9b58b"))
+ draw_rect(Rect2(0,0,480,900),RouteArt.GROUND[preferences.route])
  var travel: float = sim.distance if page in ["game","pause","results"] else 0.0
  draw_rect(Rect2(95,0,290,900),Color("283c49"))
- draw_rect(Rect2(105,0,270,900),Color("344955"))
+ draw_rect(Rect2(105,0,270,900),RouteArt.ROAD[preferences.route])
  for edge in [95,377]:
   for i in range(-1,25):
    draw_rect(Rect2(edge,float(i*40)+fmod(travel,40.0),8,38),Color("f0ce86") if i%2==0 else Color("a76c54"))
@@ -342,6 +422,8 @@ func _draw() -> void:
    var x := 96.0+j*30.0
    var sag := 28.0*(1.0-absf(x-240.0)/158.0)
    draw_colored_polygon(PackedVector2Array([Vector2(x,y+sag),Vector2(x+18,y+sag),Vector2(x+9,y+sag+22)]),[GOLD,CORAL,MINT][j%3])
+ route_art.street(self,preferences,effects_time,travel,button_theme.default_font)
+ route_art.festival(self,preferences,effects_time,travel)
  market_life.draw_flying(self,effects_time,preferences.reduce_effects)
  if page in ["game","pause","results"]:
   for row in sim.rows:
@@ -365,14 +447,19 @@ func _draw() -> void:
   draw_arc(Vector2(240,853),42,PI+0.2,PI+0.2+speed_fraction*(PI-0.4),24,MINT,3,true)
 
 func draw_stall(at: Vector2, index: int) -> void:
- draw_texture_rect(STALL_ART[posmod(index,4)],Rect2(at,Vector2(94,200)),false)
+ draw_texture_rect(RouteArt.FACADES[preferences.route],Rect2(at+Vector2(3,0),Vector2(88,158)),false)
+ draw_texture_rect(STALL_ART[posmod(index,4)],Rect2(at+Vector2(0,84),Vector2(94,122)),false)
 
 func draw_rickshaw(at: Vector2) -> void:
  # Art stays inside the existing obstacle/collision readability envelope.
  var lean: float = clampf((float(sim.lane)-sim.x)*0.12,-0.1,0.1) if page == "game" and not preferences.reduce_effects else 0.0
  draw_set_transform(at,lean)
- draw_texture_rect(RICKSHAW_ART,Rect2(Vector2(-36,-52),Vector2(72,106)),false)
+ draw_texture_rect(RouteArt.SKINS[preferences.skin],Rect2(Vector2(-36,-52),Vector2(72,106)),false)
  if page == "game" and sim.state == "running" and not preferences.reduce_effects:
+  var tassel: float = sin(effects_time*8.0)*2.0
+  for side in [-23.0,23.0]:
+   draw_line(Vector2(side,1),Vector2(side+tassel,11),GOLD,1.5,true)
+   draw_circle(Vector2(side+tassel,12),2,CORAL)
   var wheel_offset: float = fmod(sim.distance*0.3,8.0)
   for side in [-26.0,26.0]:
    for i in range(2):

@@ -137,8 +137,8 @@ func test_saves() -> void:
  check(data.scores == [10,20,30],"reset does not mutate original")
  # Test real I/O in a unique disposable test file, never a player save.
  check(saves.save_data(data),"actual temporary-file save")
- check(saves.load_data() == data,"actual save reload")
- check(saves.save_data(reset) and saves.load_data() == reset,"actual overwrite rename")
+ check(saves.load_data() == saves.validate(data),"actual save reload")
+ check(saves.save_data(reset) and saves.load_data() == saves.validate(reset),"actual overwrite rename")
  DirAccess.remove_absolute(ProjectSettings.globalize_path(test_path))
 
 func test_localization() -> void:

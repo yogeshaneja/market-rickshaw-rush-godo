@@ -2,12 +2,17 @@
   "engineVerified": "4.6.3.stable.official.7d41c59c4",
   "rendererConfigured": "gl_compatibility",
   "headlessImport": "passed",
-  "runnerChecks": 90687,
-  "uiStoreChecks": 18,
+  "runnerChecks": 90756,
+  "uiStoreChecks": 24,
   "renderedDesktopReview": "blocked by desktop automation input focus",
   "androidExport": "not performed",
   "signedAab": "not built",
   "humanHindiAndBalanceReview": "pending",
   "releaseDrafts": "prepared",
-  "published": false
+  "published": false,
+  "presentationChecks": 34,
+  "audioPayloadBytes": 73000,
+  "audioAssets": "original synthesis bundled; provenance and CC0 output notice prepared",
+  "audioListeningAndAndroidInterruptions": "pending",
+  "routeAndLightingDeviceReview": "pending"
 }

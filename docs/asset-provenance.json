@@ -19,12 +19,21 @@
       "assets/art/elephant.svg",
       "assets/art/monkey.svg",
       "assets/art/snake.svg",
-      "assets/art/circus-tent.svg"
+      "assets/art/circus-tent.svg",
+      "assets/art/facade-0.svg",
+      "assets/art/facade-1.svg",
+      "assets/art/facade-2.svg",
+      "assets/art/palm.svg",
+      "assets/art/rickshaw-coral.svg",
+      "assets/art/rickshaw-indigo.svg",
+      "assets/art/shopper.svg",
+      "assets/art/vendor.svg",
+      "scripts/route_art.gd"
     ],
     "thirdPartyCharacters": false,
     "downloadedArt": false,
-    "audio": "none; silent prototype",
-    "description": "Original vector illustrations: four market stalls with striped awnings, produce, shop signs and plants; top-down rickshaw, car and fruit cart. No external image downloads or branded characters. Additional original tea stall, tree, umbrella and kite illustrations, native drawn birds, garlands, steam and dust. Flying objects are decorative only. Original stylized elephant, monkey, snake and circus-tent artwork. No branded circus assets or external animal imagery."
+    "audio": "Original procedural music/SFX, documented separately in docs/audio-provenance.json",
+    "description": "Original vector illustrations: four market stalls with striped awnings, produce, shop signs and plants; top-down rickshaw, car and fruit cart. No external image downloads or branded characters. Additional original tea stall, tree, umbrella and kite illustrations, native drawn birds, garlands, steam and dust. Flying objects are decorative only. Original stylized elephant, monkey, snake and circus-tent artwork. No branded circus assets or external animal imagery. Three original facade palettes, palms, two original people illustrations, decorated rickshaw skins, native marigolds, warm/evening lighting, coastal waves and decorative rain."
   },
   "font": {
     "file": "assets/fonts/NotoSansDevanagari-Regular.ttf",

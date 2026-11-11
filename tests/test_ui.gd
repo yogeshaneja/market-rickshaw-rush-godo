@@ -17,7 +17,7 @@ func run() -> void:
  await process_frame
  print("UI home ready")
  check(game.page == "home","home loaded")
- for page in ["tutorial","settings","about","home"]:
+ for page in ["tutorial","settings","about","garage","home"]:
   game.show_page(page)
   check(is_instance_valid(game.ui),"UI page constructed")
  print("UI pages built")
@@ -83,5 +83,7 @@ func run() -> void:
  DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
  game.queue_free()
  await process_frame
+ # Let the audio mixer release queued playback resources after player teardown.
+ await create_timer(0.15).timeout
  print("UI/STORE CHECKS: %d passed / %d checks" % [checks-failures,checks])
  quit(1 if failures else 0)
